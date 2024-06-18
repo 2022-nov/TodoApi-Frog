@@ -39,4 +39,4 @@ jobs:
     # - name: Setup jFrog 
     #   run: dotnet nuget add source '$JF_URL' --name poc1-nuget-local --store-password-in-clear-text --username '$JF_USERNAME' --password $JF_PASSWORD
     - name: Push to jFrog 
-      run: dotnet nuget push ./SimpleSolution.MySimpleLib.*.nupkg --source $JF_URL --api-key $JF_APIKEY
+      run: dotnet nuget push ./SimpleSolution.MySimpleLib.*.nupkg --source $JF_URL/MySimpleLib --api-key $JF_APIKEY
