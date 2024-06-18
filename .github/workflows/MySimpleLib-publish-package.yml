@@ -36,6 +36,6 @@ jobs:
     - name: Pack
       run: dotnet pack --no-restore -o ./
     - name: Setup jFrog 
-      run: dotnet nuget add source '$JF_URL' --name poc1-nuget-local --username '$JF_USER' --password $JF_PASSWORD
+      run: dotnet nuget add source '$JF_URL' --name poc1-nuget-local --store-password-in-clear-text --username '$JF_USER' --password $JF_PASSWORD
     - name: Push to jFrog 
       run: dotnet nuget push ./SimpleSolution.MySimpleLib.*.nupkg --source poc1-nuget-local
