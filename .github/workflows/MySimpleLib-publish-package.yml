@@ -11,6 +11,7 @@ on:
 
 env:
   JF_URL: ${{ vars.JF_URL }}
+  JF_APIKEY: ${{ secrets.JF_APIKEY }}
   JF_USER: ${{ secrets.JF_USER }}
   JF_PASSWORD: ${{ secrets.JF_PASSWORD }}
 
@@ -38,4 +39,4 @@ jobs:
     - name: Setup jFrog 
       run: dotnet nuget add source '$JF_URL' --name poc1-nuget-local --store-password-in-clear-text --username '$JF_USER' --password $JF_PASSWORD
     - name: Push to jFrog 
-      run: dotnet nuget push ./SimpleSolution.MySimpleLib.*.nupkg --source poc1-nuget-local
+      run: dotnet nuget push ./SimpleSolution.MySimpleLib.*.nupkg --source '$JF_URL' --api-key '$JF_APIKEY'
