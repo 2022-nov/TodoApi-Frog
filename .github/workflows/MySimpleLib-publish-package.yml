@@ -15,10 +15,17 @@ on:
 #       - '*'
 
 env:
+  # https://<some-org>.jfrog.io/artifactory/api/nuget/<nuget-repo-name> 
+  # does not end with / forward slash nor index.json.
   JF_URL: ${{ vars.JF_URL }}
+  
+  # JF_APIKEY format colon separated as username:password
   JF_APIKEY: ${{ secrets.JF_APIKEY }}
   JF_USERNAME: ${{ secrets.JF_USERNAME }}
   JF_PASSWORD: ${{ secrets.JF_PASSWORD }}
+
+  # 0.1.0 #without the v prefix
+  VERSION: ${{ github.event.release.tag_name }}
 
 jobs:
   build:
@@ -36,12 +43,22 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build --no-restore -c Debug -p:Version=$VERSION
     - name: Test
       run: dotnet test --no-build --verbosity normal
     - name: Pack
-      run: dotnet pack --no-restore -o ./
+      run: dotnet pack --no-restore -c Debug -p:Version=$VERSION -o ./
     # - name: Setup jFrog 
     #   run: dotnet nuget add source '$JF_URL' --name poc1-nuget-local --store-password-in-clear-text --username '$JF_USERNAME' --password $JF_PASSWORD
     - name: Push to jFrog 
-      run: dotnet nuget push ./SimpleSolution.MySimpleLib.*.nupkg --source $JF_URL/MySimpleLib --api-key $JF_APIKEY
+      run: dotnet nuget push ./SimpleSolution.MySimpleLib.*.nupkg --source $JF_URL/MySimpleLib --api-key $JF_APIKEY --skip-duplicate
+
+    - name: Determine release
+      run: |
+        release_name=${{ github.event.release.name }}
+        echo "release_name: $release_name"
+        
+        release_tagname=${{ github.event.release.tag_name }}
+        echo "release_tagname: $release_tagname"
+        
+        echo "VERSION: $VERSION"
